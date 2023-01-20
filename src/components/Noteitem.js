@@ -4,13 +4,18 @@ import noteContext from "../context/notes/noteContext";
 const Noteitem = (props) => {
   const context = useContext(noteContext);
   const { deleteNote } = context;
-  const { note } = props;
+  const { note, updateNote } = props;
   return (
     <div className="col-md-3">
       <div className="card my-3">
         <div className="card-body">
           <div className="position-absolute top-0 end-0 my-1 mx-1">
-            <i className="fa-regular fa-pen-to-square mx-1"></i>
+            <i
+              className="fa-regular fa-pen-to-square mx-1"
+              onClick={() => {
+                updateNote(note);
+              }}
+            ></i>
           </div>
 
           <h5 className="card-title" style={{ marginTop: "0.5rem" }}>
@@ -18,6 +23,7 @@ const Noteitem = (props) => {
           </h5>
 
           <p className="card-text">{note.description} </p>
+          <small>{note.tag}</small>
           <div className="position-absolute bottom-0 end-0 my-1 mx-1">
             <i
               className="fa-regular fa-trash-can mx-1"

@@ -1,11 +1,13 @@
 const connectToMongo = require("./db");
-
-connectToMongo();
-
 const express = require("express");
+var cors = require("cors");
 const app = express();
 const port = 4000;
 
+connectToMongo();
+
+// CORS is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
+app.use(cors());
 app.use(express.json());
 
 //Available routes
