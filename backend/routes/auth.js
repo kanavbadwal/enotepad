@@ -19,10 +19,12 @@ router.post(
     }),
   ],
   async (req, res) => {
+    let success = false;
     // If an error, it'll return a bad request and an error.
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array() });
     }
 
     try {
@@ -30,7 +32,8 @@ router.post(
       let user = await User.findOne({ email: req.body.email });
       if (user) {
         return res.status(400).json({
-          error: "The email already exists. Please enter another email.",
+          success,
+          error: "The email already exists. Please enter an other email.",
         });
       }
 
@@ -49,11 +52,12 @@ router.post(
       };
 
       const authtoken = jwt.sign(data, JWT_SECRET);
-
-      res.json({ authtoken });
+      success = true;
+      res.json({ success, authtoken });
     } catch (error) {
+      success = false;
       console.error(error.message);
-      res.status(500).json({ Error: "Internal server error." });
+      res.status(500).json({ success, Error: "Internal server error." });
     }
   }
 );
@@ -68,8 +72,9 @@ router.post(
   async (req, res) => {
     // If an error, it'll return a bad request and an error.
     const errors = validationResult(req);
+    let success = false;
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array() });
     }
     const { email, password } = req.body;
     try {
@@ -78,6 +83,7 @@ router.post(
       //Throw an error if email not found.
       if (!user) {
         return res.status(400).json({
+          success,
           error:
             "The current credentials are wrong. Please enter the valid credentials.",
         });
@@ -87,6 +93,7 @@ router.post(
       //Throw an error if password not found.
       if (!passwordCompare) {
         return res.status(400).json({
+          success,
           error:
             "The current credentials are wrong. Please enter the valid credentials.",
         });
@@ -96,8 +103,10 @@ router.post(
         user: user.id,
       };
       const authtoken = jwt.sign(data, JWT_SECRET);
-      res.json({ authtoken });
+      success = true;
+      res.json({ success, authtoken });
     } catch (error) {
+      success = false;
       console.error(error.message);
       res.status(500).json({ Error: "Internal server error." });
     }
@@ -107,13 +116,16 @@ router.post(
 // ROUTE 3: Get the user details using : POST "/api/auth/getuser". Login required.
 router.post("/getuser", fetchuser, async (req, res) => {
   try {
+    let success = false;
     const userId = req.user.id;
     // Find the user by id and -password is added to get user details except password.
     const user = await User.findById(userId).select("-password");
-    res.send({ user });
+    success = true;
+    res.send({ success, user });
   } catch (error) {
+    success = false;
     console.error(error.message);
-    res.status(500).json({ Error: "Internal server error." });
+    res.status(500).json({ success, Error: "Internal server error." });
   }
 });
 module.exports = router;

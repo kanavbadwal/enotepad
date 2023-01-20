@@ -27,8 +27,8 @@ const Addnote = () => {
   };
 
   return (
-    <div className="container my-3">
-      <h2>Add a note</h2>
+    <div className="container col-md-5 shadow p-3 mb-5 bg-body-tertiary rounded">
+      <h2 className="d-flex justify-content-evenly">Add a note</h2>
       <form className="my-3">
         <div className="mb-3">
           <label htmlFor="title" className="form-label">
