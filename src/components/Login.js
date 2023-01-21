@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // import { Redirect } from "react-router-dom";
 
-const Login = () => {
+const Login = (props) => {
   const host_env = process.env.REACT_APP_HOST;
   const [credentials, setCredentials] = useState({ email: "", password: "" });
-  let history = useNavigate();
+  let navigate = useNavigate();
 
   // handleSubmit function
   const handleSubmit = async (e) => {
@@ -23,8 +23,9 @@ const Login = () => {
       console.log(json);
       if (json.success) {
         // Save the auth token and redirect
+        props.showAlert("Login successfully", "success");
         localStorage.setItem("token", json.authtoken);
-        history("/");
+        navigate("/");
         // window.location = "/";
       } else {
         alert("Invalid credentials.");
@@ -40,8 +41,9 @@ const Login = () => {
   };
 
   return (
-    <div className="container col-md-5 shadow p-3 mb-5 bg-body-tertiary rounded ">
+    <div className="container col-md-5 mt-5 shadow p-3 mb-5 bg-body-tertiary rounded ">
       <form onSubmit={handleSubmit}>
+        <h3 className="mb-4">Sign in to your account to view your notes.</h3>
         <div className="form-floating mb-3">
           <input
             type="email"
@@ -66,9 +68,11 @@ const Login = () => {
           />
           <label htmlFor="floatingPassword">Password</label>
         </div>
-        <button type="submit" className="btn btn-warning ">
-          Login
-        </button>
+        <div style={{ textAlign: "center" }}>
+          <button type="submit" className="btn btn-warning ">
+            Login
+          </button>
+        </div>
       </form>
     </div>
   );

@@ -13,8 +13,7 @@ const NoteState = (props) => {
     const response = await fetch(`${host_env}/api/notes/fetchallnotes`, {
       method: "GET",
       headers: {
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjNjNjRhNzE0NGE4NmQzNWU1MzgwMTUxIiwiaWF0IjoxNjczOTQ1ODE4fQ.I8vOQv4o9LXElD3K-m3Q4m9ldSm4ySZkw3hQJ0a9OYU",
+        "auth-token": localStorage.getItem("token"),
       },
     });
     const json = await response.json();
@@ -29,8 +28,7 @@ const NoteState = (props) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjNjNjRhNzE0NGE4NmQzNWU1MzgwMTUxIiwiaWF0IjoxNjczOTQ1ODE4fQ.I8vOQv4o9LXElD3K-m3Q4m9ldSm4ySZkw3hQJ0a9OYU",
+        "auth-token": localStorage.getItem("token"),
       },
       body: JSON.stringify({ title, description, tag }),
     });
@@ -46,11 +44,11 @@ const NoteState = (props) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjNjNjRhNzE0NGE4NmQzNWU1MzgwMTUxIiwiaWF0IjoxNjczOTQ1ODE4fQ.I8vOQv4o9LXElD3K-m3Q4m9ldSm4ySZkw3hQJ0a9OYU",
+        "auth-token": localStorage.getItem("token"),
       },
     });
     const json = await response.json();
+    console.log(json);
     const newNotes = notes.filter((note) => {
       return note._id !== id;
     });
@@ -63,14 +61,13 @@ const NoteState = (props) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjNjNjRhNzE0NGE4NmQzNWU1MzgwMTUxIiwiaWF0IjoxNjczOTQ1ODE4fQ.I8vOQv4o9LXElD3K-m3Q4m9ldSm4ySZkw3hQJ0a9OYU",
+        "auth-token": localStorage.getItem("token"),
       },
       body: JSON.stringify({ title, description, tag }),
     });
 
     const json = await response.json();
-
+    console.log(json);
     let newNotes = JSON.parse(JSON.stringify(notes));
     // Logic to edit in client
     for (let index = 0; index < notes.length; index++) {

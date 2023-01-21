@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Signup = () => {
+const Signup = (props) => {
   const host_env = process.env.REACT_APP_HOST;
   const [credentials, setCredentials] = useState({
     name: "",
@@ -28,13 +28,19 @@ const Signup = () => {
         }),
       });
       const json = await response.json();
-      console.log("Signed up,");
+      //console.log("Signed up,");
       console.log(json);
       if (json.success) {
         // Save the auth token and redirect
         localStorage.setItem("token", json.authtoken);
+        props.showAlert(
+          "Thanks for signing up with us " + credentials.name + ".",
+          "success"
+        );
         history("/");
         // window.location = "/";
+      } else {
+        props.showAlert("Invalid credentials", "danger");
       }
     } catch (error) {
       console.log("error :" + error);
@@ -46,8 +52,9 @@ const Signup = () => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
   return (
-    <div className="container col-md-5 shadow p-3 mb-5 bg-body-tertiary rounded">
+    <div className="container col-md-5 mt-5 shadow p-3 mb-5 bg-body-tertiary rounded">
       <form onSubmit={handleSubmit}>
+        <h3 className="mb-4">Sign up to use create notes.</h3>
         <div className="form-floating mb-3">
           <input
             type="text"

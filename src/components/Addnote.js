@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
 import noteContext from "../context/notes/noteContext";
 
-const Addnote = () => {
+const Addnote = (props) => {
   const context = useContext(noteContext);
   const { addNote } = context;
+  const { showAlert } = props;
   const [note, setNote] = useState({
     title: "",
     description: "",
@@ -20,6 +21,10 @@ const Addnote = () => {
     // }
     // console.log(note.tag.length === 0);
     addNote(note.title, note.description, note.tag);
+    showAlert(
+      '"' + note.title + '" note is successfully added to your notes.',
+      "success"
+    );
     setNote({ title: "", description: "", tag: "" });
   };
   const onChange = (e) => {
@@ -27,7 +32,7 @@ const Addnote = () => {
   };
 
   return (
-    <div className="container col-md-5 shadow p-3 mb-5 bg-body-tertiary rounded">
+    <div className="container col-md-5 mt-5 shadow p-3 mb-5 bg-body-tertiary rounded">
       <h2 className="d-flex justify-content-evenly">Add a note</h2>
       <form className="my-3">
         <div className="mb-3">
@@ -77,15 +82,16 @@ const Addnote = () => {
             value={note.tag}
           />
         </div>
-
-        <button
-          type="submit"
-          disabled={note.title.length < 5 || note.description.length < 5}
-          className="btn btn-warning"
-          onClick={handleClick}
-        >
-          Add note
-        </button>
+        <div style={{ textAlign: "center" }}>
+          <button
+            type="submit"
+            disabled={note.title.length < 5 || note.description.length < 5}
+            className="btn btn-warning"
+            onClick={handleClick}
+          >
+            Add note
+          </button>
+        </div>
       </form>
     </div>
   );
