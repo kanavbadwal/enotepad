@@ -1,46 +1,66 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+// import Alert from "./Alert";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Signup = (props) => {
   const host_env = process.env.REACT_APP_HOST;
+  const site_key_env = process.env.REACT_APP_SITE_KEY;
   const [credentials, setCredentials] = useState({
     name: "",
     email: "",
     password: "",
     cpassword: "",
   });
+
   let history = useNavigate();
+
+  // ---------Recaptcha variable and function ------------
+  const [verifyCaptcha, setVerifyCaptcha] = useState(false);
+  const onChangeCaptcha = (value) => {
+    console.log("Captcha value:", value);
+    setVerifyCaptcha(true);
+  };
 
   // handleChnage function
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // Api Call
-      const response = await fetch(`${host_env}/api/auth/createuser`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: credentials.name,
-          email: credentials.email,
-          password: credentials.password,
-        }),
-      });
-      const json = await response.json();
-      //console.log("Signed up,");
-      console.log(json);
-      if (json.success) {
-        // Save the auth token and redirect
-        localStorage.setItem("token", json.authtoken);
+      if (credentials.password !== credentials.cpassword) {
         props.showAlert(
-          "Thanks for signing up with us " + credentials.name + ".",
-          "success"
+          "Password and confirm password do not match.",
+          "danger"
         );
-        history("/");
-        // window.location = "/";
+      } else if (!verifyCaptcha) {
+        props.showAlert("Verify reCAPTCHA.", "danger");
       } else {
-        props.showAlert("Invalid credentials", "danger");
+        const response = await fetch(`${host_env}/api/auth/createuser`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: credentials.name,
+            email: credentials.email,
+            password: credentials.password,
+          }),
+        });
+        const json = await response.json();
+        //console.log("Signed up,");
+        console.log(json);
+        if (json.success) {
+          // Save the auth token and redirect
+          localStorage.setItem("token", json.authtoken);
+          props.showAlert(
+            "Thanks for signing up with us " + credentials.name + ".",
+            "success"
+          );
+          history("/");
+          // window.location = "/";
+        } else {
+          props.showAlert("Invalid credentials", "danger");
+        }
       }
     } catch (error) {
       console.log("error :" + error);
@@ -108,11 +128,28 @@ const Signup = (props) => {
           />
           <label htmlFor="floatingPassword">Confirm Password</label>
         </div>
+        <div className="form-floating mb-3">
+          <ReCAPTCHA sitekey={site_key_env} onChange={onChangeCaptcha} />
+          {/* <button
+            class="g-recaptcha"
+            data-sitekey="6LfF_zkkAAAAAJJOZWyrvu8QvE2Jfs42sQrIIB6n"
+            data-callback={onChangeCaptcha}
+          >
+            Submit
+          </button> */}
+          {/* 
+          <div
+            className="g-recaptcha"
+            data-sitekey="6LfF_zkkAAAAAJJOZWyrvu8QvE2Jfs42sQrIIB6n"
+            data-callback={onChangeCaptcha}
+          ></div> */}
+        </div>
+
         <div className="col-6  mx-auto">
           <button
             type="submit"
             className="btn btn-warning mx-2"
-            disabled={!(credentials.password === credentials.cpassword)}
+            // disabled={!(credentials.password === credentials.cpassword)}
           >
             Sign up
           </button>
