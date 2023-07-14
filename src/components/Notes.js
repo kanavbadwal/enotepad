@@ -168,9 +168,9 @@ const Notes = (props) => {
       <div className="row my-3 container shadow p-3 mb-5 bg-body-tertiary rounded ">
         <h2 className="d-flex justify-content-evenly">All notes</h2>
         <div className="container">
-          {notes.length === 0 && "No notes available."}
+          {notes?.length === 0 && "No notes available."}
         </div>
-        {notes.map((note) => {
+        {notes?.map((note) => {
           return (
             <Noteitem
               note={note}
