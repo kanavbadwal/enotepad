@@ -16,25 +16,37 @@ const Signup = (props) => {
   let history = useNavigate();
 
   // ---------Recaptcha variable and function ------------
-  const [verifyCaptcha, setVerifyCaptcha] = useState(false);
-  const onChangeCaptcha = (value) => {
-    console.log("Captcha value:", value);
-    setVerifyCaptcha(true);
-  };
+  // const [verifyCaptcha, setVerifyCaptcha] = useState(false);
+  // const onChangeCaptcha = (value) => {
+  //   if (value) {
+  //     console.log("Captcha value:", value);
+  //     setVerifyCaptcha(true);
+  //   } else {
+  //     setVerifyCaptcha(false);
+  //   }
+  // };
 
   // handleChnage function
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // Api Call
-      if (credentials.password !== credentials.cpassword) {
+      if (
+        credentials.name === "" ||
+        credentials.email === "" ||
+        credentials.tag === ""
+      ) {
+        props.showAlert("Enter all the credentials.", "warning");
+      } else if (credentials.password !== credentials.cpassword) {
         props.showAlert(
           "Password and confirm password do not match.",
           "danger"
         );
-      } else if (!verifyCaptcha) {
-        props.showAlert("Verify reCAPTCHA.", "danger");
-      } else {
+      }
+      // else if (!verifyCaptcha) {
+      //   props.showAlert("Verify reCAPTCHA.", "danger");
+      // }
+      else {
         const response = await fetch(`${host_env}/api/auth/createuser`, {
           method: "POST",
           headers: {
@@ -99,6 +111,7 @@ const Signup = (props) => {
               id="email"
               name="email"
               placeholder="name@example.com"
+              autoComplete="username"
             />
             <label htmlFor="floatingInputGroup1">Email address</label>
           </div>
@@ -112,6 +125,7 @@ const Signup = (props) => {
             id="password"
             placeholder="Password"
             name="password"
+            autoComplete="new-password"
             minLength="5"
           />
           <label htmlFor="floatingPassword">Password</label>
@@ -125,27 +139,15 @@ const Signup = (props) => {
             id="cpassword"
             placeholder="Confirm Password"
             name="cpassword"
+            autoComplete="confirm-password"
           />
           <label htmlFor="floatingPassword">Confirm Password</label>
         </div>
-        <div className="form-floating mb-3">
+        {/* <div className="form-floating mb-3">
           <ReCAPTCHA sitekey={site_key_env} onChange={onChangeCaptcha} />
-          {/* <button
-            class="g-recaptcha"
-            data-sitekey="6LfF_zkkAAAAAJJOZWyrvu8QvE2Jfs42sQrIIB6n"
-            data-callback={onChangeCaptcha}
-          >
-            Submit
-          </button> */}
-          {/* 
-          <div
-            className="g-recaptcha"
-            data-sitekey="6LfF_zkkAAAAAJJOZWyrvu8QvE2Jfs42sQrIIB6n"
-            data-callback={onChangeCaptcha}
-          ></div> */}
-        </div>
+        </div> */}
 
-        <div className="col-6  mx-auto">
+        <div className=" d-flex justify-content-center">
           <button
             type="submit"
             className="btn btn-warning mx-2"
@@ -153,7 +155,6 @@ const Signup = (props) => {
           >
             Sign up
           </button>
-          <button className="btn btn-warning mx-2 ">Cancel</button>
         </div>
       </form>
     </div>
